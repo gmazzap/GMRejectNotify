@@ -73,10 +73,10 @@ class Plugin {
      * @param \GM\RejectNotify\Form $form
      */
     function __construct( Meta $meta, PostEdit $post_edit, PostList $post_list, Form $form ) {
+        $this->meta = $meta;
         $this->post_edit = $post_edit->setPlugin( $this );
         $this->post_list = $post_list->setPlugin( $this );
         $this->form = $form->setPlugin( $this );
-        $this->meta = $meta;
     }
 
     /**
@@ -149,7 +149,7 @@ class Plugin {
         if ( ! in_array( $this->capability, $admin->capabilities, TRUE ) ) {
             $this->capability = 'edit_others_posts';
         }
-        $this->meta->enable();
+        $this->meta()->enable();
         if ( ! $this->isAjax() ) {
             add_action( 'admin_enqueue_scripts', [ $this, 'enableLater' ], 0 );
         } elseif ( $this->should() ) {
@@ -164,7 +164,7 @@ class Plugin {
     function enableLater() {
         if ( current_filter() !== 'admin_enqueue_scripts' || ! $this->should() ) return;
         $this->loadTextDomain();
-        $to_enable = $this->screen === 'post' ? $this->post_edit : $this->post_list;
+        $to_enable = $this->screen === 'post' ? $this->post_edit() : $this->post_list();
         $to_enable->enable();
     }
 
@@ -174,9 +174,13 @@ class Plugin {
      * @see GM\RejectNotify\Plugin::init()
      */
     function disable( $save_meta = FALSE ) {
-        if ( ! $save_meta ) $this->meta->disable();
-        $this->post_list->disable();
-        $this->post_edit->disable();
+        if ( ! $save_meta ) $this->meta()->disable();
+        $this->post_list()->disable();
+        $this->post_edit()->disable();
+        $this->cleanUp( $save_meta );
+    }
+
+    private function cleanUp( $save_meta = FALSE ) {
         if ( isset( $GLOBALS['l10n']['gmrejectnotify'] ) ) {
             unset( $GLOBALS['l10n']['gmrejectnotify'] );
         }
@@ -188,8 +192,8 @@ class Plugin {
 
     private function ajaxInit() {
         $base = 'wp_ajax_' . self::SLUG;
-        add_action( "{$base}_send_mail", [ $this->form, 'send' ] );
-        add_action( "{$base}_show_form", [ $this->form, 'show' ] );
+        add_action( "{$base}_send_mail", [ $this->form(), 'send' ] );
+        add_action( "{$base}_show_form", [ $this->form(), 'show' ] );
     }
 
     private function regularShould() {
