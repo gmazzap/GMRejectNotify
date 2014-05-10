@@ -85,8 +85,10 @@ class Plugin {
     }
 
     /**
-     * Inizialize plugin: load text domain, and add hooks. When current is not an ajax request,
-     * defers initialization on 'admin_enqueue_scripts' hook.
+     * Inizialize plugin: set capability, load textdomain, and add hooks.
+     * When current is not an ajax request, defers initialization on 'admin_enqueue_scripts' hook.
+     *
+     * @uses GM\RejectNotify\Plugin::enable() load textdomain, and add hooks
      */
     function init( $capability ) {
         $this->capability = $capability;
@@ -94,33 +96,23 @@ class Plugin {
         if ( ! in_array( $this->capability, $admin->capabilities, TRUE ) ) {
             $this->capability = 'edit_others_posts';
         }
-        $this->enable();
-    }
-
-    /**
-     * Initialize plugin for non-ajax requests on 'admin_enqueue_scripts' hooks.
-     */
-    function initLater() {
-        if ( current_filter() !== 'admin_enqueue_scripts' || ! $this->should() ) return;
-        if ( $this->screen === 'edit-post' ) {
-            $this->post_list->enable();
-        } elseif ( $this->screen === 'post' ) {
-            $this->post_edit->enable();
-        }
-    }
-
-    /**
-     * Remove all the hooks ()
-     *
-     */
-    function enable() {
         $this->meta->enable();
-        if ( $this->isAjax() && $this->should() ) {
+        if ( ! $this->isAjax() ) {
+            add_action( 'admin_enqueue_scripts', [ $this, 'enableLater' ], 0 );
+        } elseif ( $this->should() ) {
             $this->loadTextDomain();
             $this->ajaxInit();
-        } elseif ( ! $this->isAjax() ) {
-            add_action( 'admin_enqueue_scripts', [ $this, 'initLater' ], 0 );
         }
+    }
+
+    /**
+     * Add hooks for non-ajax requests.
+     */
+    function enableLater() {
+        if ( current_filter() !== 'admin_enqueue_scripts' || ! $this->should() ) return;
+        $this->loadTextDomain();
+        $to_enable = $this->screen === 'post' ? $this->post_edit : $this->post_list;
+        $to_enable->enable();
     }
 
     /**
