@@ -8,6 +8,7 @@ class PostList {
      * Add hooks
      */
     function enable() {
+
         add_filter( 'manage_posts_columns', [ $this, 'colHead' ] );
         add_action( 'manage_posts_custom_column', [ $this, 'colContent' ], 10, 2 );
     }
@@ -31,7 +32,7 @@ class PostList {
         if ( current_filter() !== 'manage_posts_columns' || ! is_array( $columns ) ) {
             return $columns;
         }
-        $columns['_custom-status'] = __( 'Rejected Status', 'gmrejectnotify' );
+        $columns[Plugin::SLUG . '_status'] = __( 'Rejected Status', 'gmrejectnotify' );
         return $columns;
     }
 
@@ -45,7 +46,7 @@ class PostList {
         if (
             ! $this->plugin->should()
             || current_filter() !== 'manage_posts_custom_column'
-            || $column !== '_custom-status'
+            || $column !== Plugin::SLUG . '_status'
         ) {
             return;
         }
