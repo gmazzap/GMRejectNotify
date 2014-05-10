@@ -1,26 +1,67 @@
 <?php namespace GM\RejectNotify;
 
-/*
- * Main Plugin class, manage all the other classes.
+/**
+ * Main class, manage all the other plugin classes.
+ *
+ * @version 1.0
  */
 class Plugin {
 
+    /**
+     * Plugin ID used in various parts
+     */
     const SLUG = 'gmrejectnotify';
 
+    /**
+     * Key for the post meta
+     */
     const META = '_gmrejectnotify';
 
+    /**
+     * Key for plugin nonce
+     */
     const NONCE = 'gmrejectnotify_nonce';
 
+    /**
+     * Meta class reference
+     * @var \GM\RejectNotify\Meta
+     */
+    private $meta;
+
+    /**
+     * PostEdit class reference
+     * @var \GM\RejectNotify\PostEdit
+     */
     private $post_edit;
 
+    /**
+     * PostList class reference
+     * @var \GM\RejectNotify\PostList
+     */
     private $post_list;
 
+    /**
+     * Form class reference
+     * @var \GM\RejectNotify\Form
+     */
     private $form;
 
+    /**
+     * Admin screen id
+     * @var string
+     */
     private $screen;
 
+    /**
+     * Ajax action
+     * @var string
+     */
     private $action;
 
+    /**
+     * Minimum capability to be able to reject posts
+     * @var string
+     */
     private $capability;
 
     /**
@@ -52,6 +93,27 @@ class Plugin {
      */
     function meta() {
         return $this->meta;
+    }
+
+    /**
+     * Return PostEdit class instance
+     */
+    function post_edit() {
+        return $this->post_edit;
+    }
+
+    /**
+     * Return PostList class instance
+     */
+    function post_list() {
+        return $this->post_list;
+    }
+
+    /**
+     * Return Form class instance
+     */
+    function form() {
+        return $this->form;
     }
 
     /**
