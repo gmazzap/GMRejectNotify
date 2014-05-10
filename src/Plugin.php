@@ -7,19 +7,10 @@
  */
 class Plugin {
 
-    /**
-     * Plugin ID used in various parts
-     */
     const SLUG = 'gmrejectnotify';
 
-    /**
-     * Key for the post meta
-     */
     const META = '_gmrejectnotify';
 
-    /**
-     * Key for plugin nonce
-     */
     const NONCE = 'gmrejectnotify_nonce';
 
     /**
