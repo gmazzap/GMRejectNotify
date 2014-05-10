@@ -40,7 +40,7 @@ class Plugin {
      * @param \GM\RejectNotify\Form $form
      * @param \GM\RejectNotify\Meta $meta
      */
-    function __construct( PostEdit $post_edit, PostList $post_list, Form $form, Meta $meta ) {
+    function __construct( Meta $meta, PostEdit $post_edit, PostList $post_list, Form $form ) {
         $this->post_edit = $post_edit->setPlugin( $this );
         $this->post_list = $post_list->setPlugin( $this );
         $this->form = $form->setPlugin( $this );
@@ -68,7 +68,7 @@ class Plugin {
      */
     function loadTextDomain() {
         $file = plugin_basename( self::path() );
-        load_plugin_textdomain( self::SLUG, FALSE, dirname( $file ) . '/lang/' );
+        load_plugin_textdomain( 'gmrejectnotify', FALSE, dirname( $file ) . '/lang/' );
     }
 
     /**
@@ -116,7 +116,7 @@ class Plugin {
     }
 
     /**
-     * Remove all the hooks added via init()
+     * Remove all the hooks added via init(), unset plugin classes and textdomain
      *
      * @see GM\RejectNotify\Plugin::init()
      */
@@ -124,6 +124,13 @@ class Plugin {
         $this->meta->disable();
         $this->post_list->disable();
         $this->post_edit->disable();
+        if ( isset( $GLOBALS['l10n']['gmrejectnotify'] ) ) {
+            unset( $GLOBALS['l10n']['gmrejectnotify'] );
+        }
+        unset( $this->meta );
+        unset( $this->post_list );
+        unset( $this->post_edit );
+        unset( $this->form );
     }
 
     private function ajaxInit() {

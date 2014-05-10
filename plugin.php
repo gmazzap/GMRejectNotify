@@ -25,7 +25,7 @@ add_action( 'admin_init', function () {
     if ( ! class_exists( 'GM\RejectNotify\Plugin' ) && is_file( $autoload ) ) {
         require_once $autoload;
     }
-    $plugin = new Plugin( new PostEdit, new PostList, new Form, new Meta );
+    $plugin = new Plugin( new Meta, new PostEdit, new PostList, new Form );
     // Filter: 'gm_reject_notify_instance' Allow to get plugin instance
     add_filter( 'gm_reject_notify_instance', function() use( $plugin ) {
         return $plugin;
