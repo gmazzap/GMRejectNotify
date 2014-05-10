@@ -1,4 +1,4 @@
-(function($, script_data) {
+(function($, i18nData) {
 
 
     // Namespace
@@ -13,19 +13,19 @@
      * @returns {void}
      */
     GMRejectNotify.debug_info = function(data, container, errMessage) {
-        container.append('<h3>' + script_data.debug_info + ':</h3><ul></ul>');
+        container.append('<h3>' + i18nData.debug_info + ':</h3><ul></ul>');
         $ul = container.children('ul').eq(0);
         if (errMessage)
             $ul.append('<li>' + errMessage + '</li>').show();
         if (data) {
             if (data.sender_mail)
-                $ul.append('<li><em>' + script_data.sender + '</em>: ' + data.sender_mail + '</li>');
+                $ul.append('<li><em>' + i18nData.sender + '</em>: ' + data.sender_mail + '</li>');
             if (data.recipient)
-                $ul.append('<li><em>' + script_data.recipient + '</em>: ' + data.recipient + '</li>');
+                $ul.append('<li><em>' + i18nData.recipient + '</em>: ' + data.recipient + '</li>');
             if (data.reason)
-                $ul.append('<li><em>' + script_data.email_content + '</em>: ' + data.reason + '</li>');
+                $ul.append('<li><em>' + i18nData.email_content + '</em>: ' + data.reason + '</li>');
             if (data.subject)
-                $ul.append('<li><em>' + script_data.email_subject + '</em>: ' + data.subject + '</li>');
+                $ul.append('<li><em>' + i18nData.email_subject + '</em>: ' + data.subject + '</li>');
         }
     };
 
@@ -42,18 +42,18 @@
         if (data && !error) {
             if (data.message && data.class) {
                 $container.addClass(data.class).html('<strong>' + data.message + '</strong>');
-                if (data.class === 'error' && script_data.debug === '1')
+                if (data.class === 'error' && i18nData.debug === '1')
                     GMRejectNotify.debug_info(data, $container, false);
             } else {
-                $container.addClass('error').html('<strong>' + script_data.def_mail_error + '</strong>');
-                if (script_data.debug === '1')
-                    GMRejectNotify.debug_info(data, $container, script_data.ajax_wrong_data);
+                $container.addClass('error').html('<strong>' + i18nData.def_mail_error + '</strong>');
+                if (i18nData.debug === '1')
+                    GMRejectNotify.debug_info(data, $container, i18nData.ajax_wrong_data);
             }
         }
         if (!data || error) {
-            $container.addClass('error').html('<strong>' + script_data.def_mail_error + '</strong>');
-            if (script_data.debug === '1')
-                GMRejectNotify.debug_info(false, $container, script_data.ajax_fails);
+            $container.addClass('error').html('<strong>' + i18nData.def_mail_error + '</strong>');
+            if (i18nData.debug === '1')
+                GMRejectNotify.debug_info(false, $container, i18nData.ajax_fails);
         }
         $container.show();
     };
@@ -66,7 +66,7 @@
             var postid = $(this).data('post');
             if (!postid)
                 return false;
-            var tb_show_url = ajaxurl + '?action=' + script_data.action + '&postid=' + postid;
+            var tb_show_url = ajaxurl + '?action=' + i18nData.action + '&postid=' + postid;
             tb_show('', tb_show_url);
         });
 
@@ -75,7 +75,7 @@
             e.preventDefault();
             var $form = $(this);
             var formData = $form.serialize();
-            $form.parent().append('<p class="loading">' + script_data.please_wait + '</p>');
+            $form.parent().append('<p class="loading">' + i18nData.please_wait + '</p>');
             $form.remove();
             $.ajax(
                     {
@@ -86,6 +86,8 @@
                     }
             ).done(function(data) {
                 GMRejectNotify.output(data, false);
+                var already = '<strong>' + i18nData.already_rejected + '</strong>';
+                $('#send_reject_mail_box').parent().empty().html(already);
             }).fail(function() {
                 GMRejectNotify.output(false, true);
             });
@@ -95,4 +97,4 @@
 
 
 }
-)(jQuery, gm_reject_notify_data = null);
+)(jQuery, gm_reject_notify_data);
