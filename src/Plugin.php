@@ -35,10 +35,10 @@ class Plugin {
     /**
      * Constructor
      *
+     * @param \GM\RejectNotify\Meta $meta
      * @param \GM\RejectNotify\PostEdit $post_edit
      * @param \GM\RejectNotify\PostList $post_list
      * @param \GM\RejectNotify\Form $form
-     * @param \GM\RejectNotify\Meta $meta
      */
     function __construct( Meta $meta, PostEdit $post_edit, PostList $post_list, Form $form ) {
         $this->post_edit = $post_edit->setPlugin( $this );
@@ -120,14 +120,14 @@ class Plugin {
      *
      * @see GM\RejectNotify\Plugin::init()
      */
-    function disable() {
-        $this->meta->disable();
+    function disable( $save_meta = FALSE ) {
+        if ( ! $save_meta ) $this->meta->disable();
         $this->post_list->disable();
         $this->post_edit->disable();
         if ( isset( $GLOBALS['l10n']['gmrejectnotify'] ) ) {
             unset( $GLOBALS['l10n']['gmrejectnotify'] );
         }
-        unset( $this->meta );
+        if ( ! $save_meta ) unset( $this->meta );
         unset( $this->post_list );
         unset( $this->post_edit );
         unset( $this->form );
@@ -158,6 +158,7 @@ class Plugin {
             return $wp_query instanceof \WP_Query && $wp_query->get( 'post_status' ) === 'pending';
         } else {
             $this->screen = NULL;
+            $this->disable( TRUE );
             return FALSE;
         }
     }
@@ -171,11 +172,15 @@ class Plugin {
         if ( ! empty( $meta ) ) return FALSE;
         if ( $type === INPUT_GET ) {
             $this->action = filter_input( $type, 'action', FILTER_SANITIZE_STRING );
-            return $this->action === self::SLUG . '_show_form';
+            $should = $this->action === self::SLUG . '_show_form';
         } else {
             $this->action = filter_input( $type, 'action', FILTER_SANITIZE_STRING );
-            return $this->action === self::SLUG . '_send_mail';
+            $should = $this->action === self::SLUG . '_send_mail';
         }
+        if ( ! $should ) {
+            $this->disable( TRUE );
+        }
+        return $should;
     }
 
 }
