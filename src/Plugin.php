@@ -167,16 +167,11 @@ class Plugin {
         $method = filter_input( INPUT_SERVER, 'REQUEST_METHOD', FILTER_SANITIZE_STRING );
         $type = strtoupper( $method ) === 'GET' ? INPUT_GET : INPUT_POST;
         $pid = filter_input( $type, 'postid', FILTER_SANITIZE_STRING );
-        $this->action = filter_input( $type, 'action', FILTER_SANITIZE_STRING );
         $meta = $this->meta()->getMeta( $pid );
         if ( ! empty( $meta ) ) return FALSE;
-        if ( $type === INPUT_GET ) {
-            $this->action = filter_input( $type, 'action', FILTER_SANITIZE_STRING );
-            $should = $this->action === self::SLUG . '_show_form';
-        } else {
-            $this->action = filter_input( $type, 'action', FILTER_SANITIZE_STRING );
-            $should = $this->action === self::SLUG . '_send_mail';
-        }
+        $this->action = filter_input( $type, 'action', FILTER_SANITIZE_STRING );
+        $check = $type === INPUT_GET ? '_show_form' : '_send_mail';
+        $should = $this->action === self::SLUG . $check;
         if ( ! $should ) {
             $this->disable( TRUE );
         }
