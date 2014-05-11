@@ -44,7 +44,8 @@ class PostEdit {
             'ajax_wrong_data'  => esc_html__( 'Ajax callback return nothing or wrong data', 'gmrejectnotify' ),
             'ajax_fails'       => esc_html__( 'Ajax call fails', 'gmrejectnotify' )
         ];
-        $rel = 'js/gm-reject-notify.js';
+        $rel = 'js/gm-reject-notify';
+        $rel .= defined( 'WP_DEBUG' ) && WP_DEBUG ? '.min.js' : '.js';
         $url = plugins_url( $rel, Plugin::path() );
         $path = str_replace( 'plugin.php', $rel, Plugin::path() );
         $ver = @filemtime( $path ) ? : NULL;

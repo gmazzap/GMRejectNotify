@@ -40,20 +40,24 @@
         $('#send_rejected_form_wrap .loading').remove();
         $container = $('#GMRejectNotifyMessage');
         if (data && !error) {
-            if (data.message && data.class) {
-                $container.addClass(data.class).html('<strong>' + data.message + '</strong>');
-                if (data.class === 'error' && i18nData.debug === '1')
+            var _class = data['class'];
+            if (data.message && _class) {
+                $container.addClass(_class).html('<strong>' + data.message + '</strong>');
+                if (_class === 'error' && i18nData.debug === '1') {
                     GMRejectNotify.debug_info(data, $container, false);
+                }
             } else {
                 $container.addClass('error').html('<strong>' + i18nData.def_mail_error + '</strong>');
-                if (i18nData.debug === '1')
+                if (i18nData.debug === '1') {
                     GMRejectNotify.debug_info(data, $container, i18nData.ajax_wrong_data);
+                }
             }
         }
         if (!data || error) {
             $container.addClass('error').html('<strong>' + i18nData.def_mail_error + '</strong>');
-            if (i18nData.debug === '1')
+            if (i18nData.debug === '1') {
                 GMRejectNotify.debug_info(false, $container, i18nData.ajax_fails);
+            }
         }
         $container.show();
     };
