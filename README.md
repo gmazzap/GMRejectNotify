@@ -5,7 +5,9 @@ GM Reject and Notify is a WordPress plugin that add a button to post edit page t
 
 Version 1.0
 -----------
-Version 1.0 is a complete refactoring from  versions 0.*. If you have installed that legacy versions, please be sure to completely remove old plugin folder and then install and activate new version.
+Version 1.0 is a complete refactoring from versions 0.*.
+
+If you have installed legacy versions, please __be sure to completely remove 0.* plugin folder and then install and activate new version__.
 
 Screenshots
 -----------
